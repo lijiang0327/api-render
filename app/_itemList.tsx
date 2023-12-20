@@ -30,6 +30,8 @@ const ItemList: FC<ItemListProps> = ({data}) => {
  
   return <div className="mt-8 overflow-hidden">
     <input 
+      type="text"
+      aria-label='search'
       placeholder="Search..." 
       className="border w-full rounded-lg h-12 pl-4 mb-4"   
       onChange={onChangeHandler}
