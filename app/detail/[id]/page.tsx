@@ -7,7 +7,7 @@ const Detail = async ({params}: {params: {id: string}}) => {
 
   return <div className="max-w-2xl ml-auto mr-auto pt-10">
     <div>
-      <Link href="/home" className="cursor-pointer font-bold text-3xl text-cyan-500">back</Link>
+      <Link href="/" className="cursor-pointer font-bold text-3xl text-cyan-500">back</Link>
     </div>
     <div className="flex gap-4 mt-12">
       <div className="w-16">
