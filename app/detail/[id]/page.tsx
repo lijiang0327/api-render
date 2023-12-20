@@ -11,7 +11,7 @@ const Detail = async ({params}: {params: {id: string}}) => {
     </div>
     <div className="flex gap-4 mt-12">
       <div className="w-16">
-        <img className="w-16" src={data.image_url} alt="image" />
+        <img className="w-16" src={data.image_url} alt="beer-image" />
       </div>
       <div className="flex-1">
         <h1 className="mb-4">{data.name}</h1>

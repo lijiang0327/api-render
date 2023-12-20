@@ -51,7 +51,7 @@ const TopBar: FC<TopBarProps> = ({data}) => {
                   key={d.id}
                 >
                   <div style={{...style, transform: `translateY(${(1-style.opacity) * 100}%)`}}>
-                    <img className="w-12" src={d.image_url} />
+                    <img className="w-12" src={d.image_url} alt="beer-image" />
                   </div>
                   <div 
                     className="flex flex-col justify-between"
