@@ -12,6 +12,9 @@ instance.interceptors.request.use((config) => {
 // we handle response errors in this context
 instance.interceptors.response.use((response) => {
   return response;
+}, error => {
+  console.log(error);
+  return Promise.resolve({});
 });
 
 export default instance;

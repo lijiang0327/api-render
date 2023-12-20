@@ -5,8 +5,8 @@ import ItemList from './_itemList';
 const Home = async () => {
   const [data, randomData] = await Promise.all([getList(1, 10), getRandomList()])
  
-  return <div className="">
-    <h1>Beam</h1>
+  return <div className="max-w-2xl ml-auto mr-auto pt-10">
+    <h1 className="font-bold text-3xl text-cyan-500 mb-8">Beam</h1>
     <TopBar data={randomData} />
     <ItemList data={data} />
   </div>

@@ -1,14 +1,33 @@
-import http from './http';
-import {useMutation} from 'react-query';
+import axios from 'axios';
 
-export const getList = async (page: number, per_page: number, bearName?: string) => {
-  const result = await http.get('/v2/beers', {params: {page, per_page, bearName}});
+import http from './http';
+
+
+export const getListController = new AbortController();
+
+export const getList = async (page: number, per_page: number, beer_name?: string) => {
+  const result = await http.get('/v2/beers', {
+    params: {page, per_page, beer_name: beer_name || undefined},
+    signal: getListController.signal
+  });
 
   return result.data;
 }
 
-export const getDetail = async () => {};
+export const getDetail = async (id: string) => {
+  const result = await http.get(`/v2/beers/${id}`);
 
+  return result.data[0];
+};
+
+const sleep = async (second = 1) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(null);
+    }, second * 1000);
+  })
+}
+  
 let getRandomListTryCount = 0;
 export const getRandomList = async () => {
   const randomPageIndex = Math.floor(Math.random() * 50);
@@ -17,10 +36,11 @@ export const getRandomList = async () => {
   const getData = async () => {
     getRandomListTryCount ++;
     try {
-      const list = await http.get('v2/beers/', {params: {page: randomPageIndex, per_page: 2}});
+      const list = await http.get('v2/beers', {params: {page: randomPageIndex, per_page: 2}});
       result = list.data;
     } catch (error) {
       if (getRandomListTryCount < 3) {
+        await sleep();
         await getData();
       }
     }

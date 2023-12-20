@@ -1,6 +1,8 @@
 'use client'
 
 import {FC, useRef, useEffect, useState, useCallback} from 'react';
+import Link from 'next/link';
+import {Motion, spring} from 'react-motion';
 
 import {getRandomList} from '@/utils/getData';
 
@@ -31,10 +33,43 @@ const TopBar: FC<TopBarProps> = ({data}) => {
     fetchData();
   }, [fetchData])
 
-  return <div>
-    {!!listData?.length && listData.map((d) => {
-      return <div key={d.id}>{d.name}</div>
-    })}
+  return <div className="flex gap-4">
+    <Motion
+      key={listData?.reduce((pre, cur) => pre + cur.id, '')}
+      defaultStyle={{opacity: 0}}
+      style={{
+        opacity: spring(1)
+      }}
+    >
+      {(style) => {
+        return <>
+          {
+            !!listData?.length && listData.map((d) => {
+              return (
+                <div 
+                  className="flex-1 border rounded-md p-4 flex gap-4 h-56 overflow-hidden" 
+                  key={d.id}
+                >
+                  <div style={{...style, transform: `translateY(${(1-style.opacity) * 100}%)`}}>
+                    <img className="w-12" src={d.image_url} />
+                  </div>
+                  <div 
+                    className="flex flex-col justify-between"
+                    style={{...style, transform: `translateX(${(1-style.opacity) * 100}%)`}}
+                  >
+                    <div>
+                      <h3>{d.name}</h3>
+                      <span>{d.first_brewed}</span>
+                    </div>
+                    <Link className="text-cyan-500" href={`/detail/${d.id}`}>View Detail</Link>
+                  </div>
+                </div>
+              )
+            })
+          }
+        </> 
+      }}
+    </Motion>
   </div>
 }
 
