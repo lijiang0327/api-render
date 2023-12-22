@@ -28,7 +28,7 @@ const sleep = async (second = 1) => {
   
 let getRandomListTryCount = 0;
 export const getRandomList = async () => {
-  const randomPageIndex = Math.floor(Math.random() * 50);
+  const randomPageIndex = Math.floor((Math.random()) * 50) + 1;
 
   let result: any[] = [];
   const getData = async () => {
