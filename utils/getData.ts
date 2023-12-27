@@ -1,10 +1,18 @@
 import http from './http';
 
+export type BearData = {
+  id: number
+  image_url: string
+  name: string
+  description: string
+  first_brewed: string
+  [key: string]: unknown
+}
 
 export const getListController = new AbortController();
 
 export const getList = async (page: number, per_page: number, beer_name?: string) => {
-  const result = await http.get('/v2/beers', {
+  const result = await http.get<BearData[]>('/v2/beers', {
     params: {page, per_page, beer_name: beer_name || undefined},
     signal: getListController.signal
   });
@@ -13,9 +21,9 @@ export const getList = async (page: number, per_page: number, beer_name?: string
 }
 
 export const getDetail = async (id: string) => {
-  const result = await http.get(`/v2/beers/${id}`);
+  const result = await http.get<BearData[]>(`/v2/beers/${id}`);
 
-  return result.data[0];
+  return result.data?.[0];
 };
 
 const sleep = async (second = 1) => {
@@ -30,11 +38,11 @@ let getRandomListTryCount = 0;
 export const getRandomList = async () => {
   const randomPageIndex = Math.floor((Math.random()) * 50) + 1;
 
-  let result: any[] = [];
+  let result: BearData[] = [];
   const getData = async () => {
     getRandomListTryCount ++;
     try {
-      const list = await http.get('v2/beers', {params: {page: randomPageIndex, per_page: 2}});
+      const list = await http.get<BearData[]>('v2/beers', {params: {page: randomPageIndex, per_page: 2}});
       result = list.data;
     } catch (error) {
       if (getRandomListTryCount < 3) {

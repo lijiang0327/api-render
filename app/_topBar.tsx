@@ -2,12 +2,13 @@
 
 import {FC, useRef, useEffect, useState, useCallback} from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {Motion, spring} from 'react-motion';
 
-import {getRandomList} from '@/utils/getData';
+import {BearData, getRandomList} from '@/utils/getData';
 
 type TopBarProps = {
-  data: any[]
+  data: BearData[]
 }
 
 const TopBar: FC<TopBarProps> = ({data}) => {
@@ -50,8 +51,8 @@ const TopBar: FC<TopBarProps> = ({data}) => {
                   className="flex-1 border rounded-md p-4 flex gap-4 h-56 overflow-hidden" 
                   key={d.id}
                 >
-                  <div style={{...style, transform: `translateY(${(1-style.opacity) * 100}%)`}}>
-                    <img className="w-12" src={d.image_url} alt="beer-image" />
+                  <div className="w-12 relative" style={{...style, transform: `translateY(${(1-style.opacity) * 100}%)`}}>
+                    <Image fill src={d.image_url} alt={d.name} />
                   </div>
                   <div 
                     className="flex flex-col justify-between"
