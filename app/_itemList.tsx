@@ -2,37 +2,31 @@
 
 import {FC, useState, ChangeEventHandler} from 'react';
 import Link from 'next/link';
-import {debounce} from 'lodash';
 import {Motion, spring} from 'react-motion';
+import {useDebounce} from '@uidotdev/usehooks';
 
-import {BearData, getList, getListController} from '@/utils/getData';
+import {BeerData} from '@/utils/getData';
+import {useList} from '@/utils/useData';
+import isServerSide from '@/utils/isServerSide';
 
 type ItemListProps = {
-  data: BearData[]
+  data: BeerData[]
 }
 
 const ItemList: FC<ItemListProps> = ({data}) => {
-  const [itemData, setItemData] = useState(data);
-  const [loading, setLoading] = useState(false);
+  const [queryStr, setQueryStr] = useState('');
+  const debounceQueryStr = useDebounce(queryStr, 800);
 
-  const onChangeHandler: ChangeEventHandler<HTMLInputElement> = debounce(async (event) => {
-    if (loading) {
-      getListController.abort();
-    }
+  const {data: itemData, loading} = useList(debounceQueryStr, data);
 
-    setLoading(true);
-    const queryKey = event.target.value;
-
-    try {
-      setItemData(await getList(1, 10, queryKey));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }, 500);
+  const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setQueryStr(e.currentTarget.value);
+  }
  
   return <div className="mt-8 overflow-hidden">
+    {
+      loading && <div>loading</div>
+    }
     <input 
       type="text"
       aria-label='search'
@@ -42,22 +36,21 @@ const ItemList: FC<ItemListProps> = ({data}) => {
     />
     <Motion
       key={itemData?.reduce((pre, cur) => pre + cur.id, '')}
-      defaultStyle={{opacity: 0, offset: 10}}
+      defaultStyle={{opacity: 0}}
       style={{
         opacity: spring(1),
-        offset: spring(0)
       }}
     >
       {(style) => {
         return <>
-          {!!itemData?.length && itemData.map((d, index) => {
+          {!!itemData?.length ? itemData.map((d, index) => {
             return (
               <Link key={d.id} href={`/detail/${d.id}`}>
                 <div 
                   className="flex justify-between border-b p-4 cursor-pointer hover:bg-cyan-50"
                   style={{
                     ...style,
-                    transform: `translateX(${(1 - style.opacity) * 50}%)`,
+                    transform: `translateX(${(1 - style.opacity * style.opacity) * 50}%)`,
                     transition: `all ${20 * (index + 1)}ms linear`
                   }}
                 >
@@ -66,7 +59,16 @@ const ItemList: FC<ItemListProps> = ({data}) => {
                 </div>
               </Link>
             )
-          })}
+          }) : (
+            <div
+              className="flex items-center justify-center text-2xl text-slate-400 h-[200px]"
+              style={{
+                ...style,
+                transform: `translateX(${(1 - style.opacity * style.opacity) * 50}%)`,
+                transition: `all 20ms linear`
+              }}
+            >No Data</div>
+          )}
         </>
       }}
     </Motion>

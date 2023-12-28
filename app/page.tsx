@@ -1,9 +1,15 @@
+import {QueryClient} from '@tanstack/react-query';
+
 import {getList} from '@/utils/getData';
 import TopBar from './_topBar';
 import ItemList from './_itemList';
 
 const Home = async () => {
-  const data = await getList(1, 10);
+  const queryClient = new QueryClient();
+  const data = await queryClient.fetchQuery({
+    queryKey: ['beers', 1, 10],
+    queryFn: getList,
+  });
  
   return (
     <div className="max-w-2xl ml-auto mr-auto pt-10">

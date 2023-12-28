@@ -1,6 +1,6 @@
 import http from './http';
 
-export type BearData = {
+export type BeerData = {
   id: number
   image_url: string
   name: string
@@ -9,52 +9,30 @@ export type BearData = {
   [key: string]: unknown
 }
 
-export const getListController = new AbortController();
+export const getList = async ({queryKey, signal}: any) => {
+  const [_, page, per_page, beer_name] = queryKey;
 
-export const getList = async (page: number, per_page: number, beer_name?: string) => {
-  const result = await http.get<BearData[]>('/v2/beers', {
-    params: {page, per_page, beer_name: beer_name || undefined},
-    signal: getListController.signal
-  });
-
-  return result.data;
+  try {
+    const result = await http.get<BeerData[]>('/v2/beers', {
+      params: {page, per_page, beer_name: beer_name || undefined},
+      signal
+    });
+  
+    return result.data;
+  } catch {
+    return []
+  }
 }
 
-export const getDetail = async (id: string) => {
-  const result = await http.get<BearData[]>(`/v2/beers/${id}`);
+export const getDetail = async ({queryKey}: any) => {
+  const result = await http.get<BeerData[]>(`/v2/beers/${queryKey[1]}`);
 
   return result.data?.[0];
-};
-
-const sleep = async (second = 1) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(null);
-    }, second * 1000);
-  })
-}
-  
-let getRandomListTryCount = 0;
-export const getRandomList = async () => {
-  const randomPageIndex = Math.floor((Math.random()) * 50) + 1;
-
-  let result: BearData[] = [];
-  const getData = async () => {
-    getRandomListTryCount ++;
-    try {
-      const list = await http.get<BearData[]>('v2/beers', {params: {page: randomPageIndex, per_page: 2}});
-      result = list.data;
-    } catch (error) {
-      if (getRandomListTryCount < 3) {
-        await sleep();
-        await getData();
-      }
-    }
-  }
-
-  await getData();
-  getRandomListTryCount = 0;
-  return result;
 }
 
-export default getList;
+export const getRandomList = async (queryParams: any) => {
+  const randomPageIndex =  Math.floor((Math.random()) * 50) + 1;
+  queryParams.queryKey[1] = randomPageIndex;
+
+  return await getList(queryParams);
+}

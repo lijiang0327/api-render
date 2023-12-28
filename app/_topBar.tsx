@@ -1,38 +1,19 @@
 'use client'
 
-import {FC, useRef, useEffect, useState, useCallback} from 'react';
+import {FC} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {Motion, spring} from 'react-motion';
 
-import {BearData, getRandomList} from '@/utils/getData';
+import {BeerData} from '@/utils/getData';
+import {useRandomList} from '@/utils/useData';
 
 type TopBarProps = {
-  data: BearData[]
+  data: BeerData[]
 }
 
 const TopBar: FC<TopBarProps> = ({data}) => {
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [listData, setListData] = useState(data);
-
-  const fetchData = useCallback(() => {
-    if (timerRef.current) {
-      return;
-    }
-
-    timerRef.current = setTimeout(async () => {
-      const data = await getRandomList();
-      if (data?.length) {
-        setListData(data);
-      }
-      timerRef.current = null;
-      fetchData();
-    }, 10 * 1000);
-  }, [])
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData])
+  const {data: listData} = useRandomList(5000, data);
 
   return <div className="flex gap-4">
     <Motion

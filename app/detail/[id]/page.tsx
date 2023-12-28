@@ -1,11 +1,16 @@
 import Link from 'next/link';
 import {notFound} from 'next/navigation';
 import Image from 'next/image';
+import {QueryClient} from '@tanstack/react-query';
 
 import { getDetail } from "@/utils/getData";
 
 const Detail = async ({params}: {params: {id: string}}) => {
-  const data = await getDetail(params.id);
+  const queryClient = new QueryClient();
+  const data = await queryClient.fetchQuery({
+    queryFn: getDetail,
+    queryKey: ['details', params.id]
+  })
 
   if (!data) {
     notFound();
