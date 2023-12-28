@@ -12,8 +12,7 @@ export const useList = (queryStr?: string, initialData?: BeerData[]) => {
     queryKey: ['beers', 1, 10, queryStr],
     queryFn: getList,
     initialDataUpdatedAt: 5000,
-    initialData: () => initialData,
-    placeholderData: (previousValue) => previousValue || initialData
+    placeholderData: (previousValue) => previousValue ?? initialData
   })
 
   return {
@@ -36,8 +35,7 @@ export const useRandomList = (interval: number, initialData?: BeerData[]) => {
     queryKey: ['beers', 1, 2],
     queryFn: getRandomList,
     initialDataUpdatedAt: 5000,
-    placeholderData: (previousValue) => previousValue || initialData,
-    initialData: () => initialData,
+    placeholderData: (previousValue) => previousValue ?? initialData,
     refetchInterval: interval,
     enabled
   })
