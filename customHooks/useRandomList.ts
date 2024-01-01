@@ -1,27 +1,11 @@
 'use client'
 import { useQuery } from '@tanstack/react-query';
-
-import {BeerData, getList, getRandomList} from './getData';
 import { useEffect, useState } from 'react';
 
-export const useList = (queryStr?: string, initialData?: BeerData[]) => {
-  const {
-    data,
-    isLoading,
-  } = useQuery({
-    queryKey: ['beers', 1, 10, queryStr],
-    queryFn: getList,
-    initialDataUpdatedAt: 5000,
-    placeholderData: (previousValue) => previousValue ?? initialData
-  })
+import {BeerData, getRandomList} from '@/utils/getData';
 
-  return {
-    data,
-    loading: isLoading
-  }
-}
 
-export const useRandomList = (interval: number, initialData?: BeerData[]) => {
+const useRandomList = (interval: number, initialData?: BeerData[]) => {
   const [enabled, setEnabled] = useState(false);
 
   // delay to get random data
@@ -40,5 +24,10 @@ export const useRandomList = (interval: number, initialData?: BeerData[]) => {
     enabled
   })
 
-  return {data};
+  return {
+    data,
+    setEnabled
+  };
 }
+
+export default useRandomList;

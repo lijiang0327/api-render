@@ -6,7 +6,7 @@ import {motion} from 'framer-motion';
 import {useDebounce} from '@uidotdev/usehooks';
 
 import {BeerData} from '@/utils/getData';
-import {useList} from '@/utils/useData';
+import useList from '@/customHooks/useList';
 
 type ItemListProps = {
   data: BeerData[]
@@ -40,7 +40,7 @@ const ItemList: FC<ItemListProps> = ({data}) => {
   const {data: itemData} = useList(debounceQueryStr, data);
 
   const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setQueryStr(e.currentTarget.value);
+    setQueryStr(e.currentTarget.value.trim());
   }
  
   return <div className="mt-8 overflow-hidden">
@@ -51,7 +51,7 @@ const ItemList: FC<ItemListProps> = ({data}) => {
       className="border w-full rounded-lg h-12 pl-4 mb-4"   
       onChange={onChangeHandler}
     />
-    {!!itemData?.length ? itemData.map((d, index) => {
+    {itemData?.length ? itemData.map((d, index) => {
       return (
         <Item data={d} index={index} key={d.name} />
       )

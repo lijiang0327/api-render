@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {motion} from 'framer-motion';
 
 import {BeerData} from '@/utils/getData';
-import {useRandomList} from '@/utils/useData';
+import useRandomList from '@/customHooks/useRandomList';
 
 type TopBarProps = {
   data: BeerData[]
@@ -53,13 +53,21 @@ const TopCard = ({data}: {data: BeerData}) => {
 }
 
 const TopBar: FC<TopBarProps> = ({data}) => {
-  const {data: listData} = useRandomList(5000, data);
+  const {data: listData, setEnabled} = useRandomList(10000, data);
 
-  return <div className="flex gap-4 overflow-hidden">
-    {!!listData?.length && listData.map((d) => {
-      return <TopCard data={d} key={d.id} />
-    })}
-  </div>
+  return (
+    <div 
+      className="flex gap-4 overflow-hidden"
+      onMouseOver={() => setEnabled(false)}
+      onMouseOut={() => setEnabled(true)}
+      onFocus={() => setEnabled(false)}
+      onBlur={() => setEnabled(true)}
+    >
+      {listData?.length && listData.map((d) => {
+        return <TopCard data={d} key={d.id} />
+      })}
+    </div>
+  )
 }
 
 export default TopBar;
